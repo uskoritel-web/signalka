@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mazda 6 2008: самодельный блок сигнализации и бесключевого доступа</title>
+  <meta name="description" content="ТЗ и план проекта по замене глючного блока Sher-Khan на простую, дешёвую и расширяемую систему управления центральным замком Mazda 6 2008.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b6f85'/%3E%3Cpath d='M15 36h34l-5-12H20l-5 12Zm6 10a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm22 0a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z' fill='white'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --ink: #18202a;
+      --muted: #556070;
+      --line: #d9dee6;
+      --paper: #f6f7f9;
+      --panel: #ffffff;
+      --accent: #0b6f85;
+      --accent-2: #a44818;
+      --good: #26734d;
+      --warn: #9a5b00;
+      --bad: #a53636;
+      --shadow: 0 12px 28px rgba(23, 31, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .hero {
+      min-height: 74vh;
+      display: grid;
+      align-items: end;
+      background:
+        linear-gradient(180deg, rgba(20, 25, 30, 0.2), rgba(20, 25, 30, 0.88)),
+        url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1800&q=80") center / cover;
+      color: #fff;
+    }
+
+    .hero-inner,
+    main,
+    footer {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero-inner {
+      padding: 32px 0 40px;
+    }
+
+    .kicker {
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      font-size: clamp(34px, 8vw, 78px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 18px 0 0;
+      font-size: clamp(17px, 2.8vw, 23px);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      text-decoration: none;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+
+    main {
+      padding: 22px 0 56px;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      overflow-x: auto;
+      display: flex;
+      gap: 8px;
+      padding: 10px 0;
+      background: rgba(246, 247, 249, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav a {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    section {
+      padding: 34px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: clamp(25px, 4.5vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    h4 {
+      margin: 18px 0 8px;
+      font-size: 17px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    ul,
+    ol {
+      padding-left: 22px;
+      margin: 0 0 14px;
+    }
+
+    li + li {
+      margin-top: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      grid-column: span 4;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .wide {
+      grid-column: span 8;
+    }
+
+    .half {
+      grid-column: span 6;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e7f3f5;
+      color: #0a5c70;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tag.warn {
+      background: #fff1d7;
+      color: #805000;
+    }
+
+    .tag.good {
+      background: #e4f4eb;
+      color: #1d5e3e;
+    }
+
+    .tag.bad {
+      background: #fae6e6;
+      color: #8d2f2f;
+    }
+
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .matrix th,
+    .matrix td {
+      padding: 11px 10px;
+      border: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .matrix th {
+      background: #eaf0f3;
+      font-size: 14px;
+    }
+
+    .note {
+      border-left: 5px solid var(--accent);
+      background: #fff;
+      padding: 14px 16px;
+      margin: 16px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .note.warn {
+      border-color: var(--warn);
+    }
+
+    .note.bad {
+      border-color: var(--bad);
+    }
+
+    .diagram {
+      display: grid;
+      grid-template-columns: 1fr 42px 1fr 42px 1fr;
+      gap: 8px;
+      align-items: center;
+      margin: 18px 0;
+    }
+
+    .node {
+      min-height: 104px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      padding: 14px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .node strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .node span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .arrow {
+      height: 2px;
+      background: var(--accent-2);
+      position: relative;
+    }
+
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -5px;
+      border-left: 10px solid var(--accent-2);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+    }
+
+    .phase {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .phase:first-child {
+      border-top: 0;
+    }
+
+    .phase .num {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: #edf1f5;
+      font-family: Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 14px;
+      border-radius: 8px;
+      background: #111820;
+      color: #edf7ff;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    footer {
+      padding: 30px 0 46px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 820px) {
+      .hero {
+        min-height: 82vh;
+      }
+
+      .card,
+      .wide,
+      .half {
+        grid-column: 1 / -1;
+      }
+
+      .diagram {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        width: 2px;
+        height: 28px;
+        margin: 0 auto;
+      }
+
+      .arrow::after {
+        right: -5px;
+        top: auto;
+        bottom: -1px;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 10px solid var(--accent-2);
+        border-bottom: 0;
+      }
+
+      .matrix {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .phase {
+        grid-template-columns: 54px 1fr;
+      }
+
+      .phase .num {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="kicker">Mazda 6 2008 · замена Sher-Khan 5 · гаражный прототип</p>
+      <h1>Простой блок сигнализации и доступа вместо глючного старого блока</h1>
+      <p class="lead">Цель: быстро вернуть надёжное открытие и закрытие, не лезть в иммобилайзер на первом этапе, а затем спокойно дорастить систему до PKE, датчиков и кастомной логики.</p>
+      <div class="hero-actions">
+        <a class="button" href="#variants">Варианты железа</a>
+        <a class="button" href="#alexey">Блок для Алексея</a>
+        <a class="button" href="#dev">Передача в Claude Code</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav class="nav" aria-label="Навигация">
+      <a href="#summary">Суть</a>
+      <a href="#proof">Почему возможно</a>
+      <a href="#variants">Покупка</a>
+      <a href="#architecture">Архитектура</a>
+      <a href="#alexey">Алексей</a>
+      <a href="#dev">Разработка</a>
+      <a href="#roadmap">План</a>
+    </nav>
+
+    <section id="summary">
+      <h2>Коротко: что делаем</h2>
+      <div class="grid">
+        <div class="card wide">
+          <span class="tag good">Рекомендуемый старт</span>
+          <h3>Этап 1: открыть и закрыть</h3>
+          <p>Ставим универсальный блок управления центральным замком или собственный ESP32-контроллер с развязкой. Он даёт короткие управляющие импульсы на штатные цепи lock/unlock Mazda. Машина остаётся с родным ключом и штатным иммобилайзером, поэтому риск меньше, а первый результат можно получить быстро.</p>
+          <p>Функции MVP: закрыть, открыть, моргнуть аварийкой или поворотами, включить сирену при тревоге, иметь сервисный режим и кнопку аварийного отключения.</p>
+        </div>
+        <div class="card">
+          <span class="tag warn">PKE как второй этап</span>
+          <h3>Бесключевой доступ</h3>
+          <p>Бесключевой доступ реалистичен, если понимать его как «подошёл с меткой — машина открылась, ушёл — закрылась». Это не обязательно означает кнопку Start/Stop и удалённый запуск.</p>
+          <p>Для Mazda 6 2008 лучше сначала не трогать запуск двигателя: иммобилайзер и безопасность оставляем штатными.</p>
+        </div>
+        <div class="card">
+          <span class="tag">Кулибинский путь</span>
+          <h3>Расширяемость</h3>
+          <p>Если хочется именно hand made, делаем свой контроллер поверх ESP32: BLE/NFC/RFID-метка, реле, входы концевиков, журнал событий, настройка через Wi-Fi страницу. Но силовые цепи и защита должны быть автомобильного уровня.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Главная инженерная мысль:</strong> не надо сразу строить «новую StarLine». Надо сделать маленький стабильный блок, который умеет безопасно нажимать за нас штатные кнопки lock/unlock. Всё остальное наращивается вокруг него.
+      </div>
+    </section>
+
+    <section id="proof">
+      <h2>Почему это возможно</h2>
+      <p>Задача не фантазийная: рынок полон универсальных сигнализаций и блоков keyless entry, которые работают с обычными 12-вольтовыми автомобилями и центральным замком. Установочные инструкции универсальных комплектов отдельно описывают отрицательные импульсы управления дверными замками, положительные импульсы и реверс-полярность. Для азиатских машин типовым вариантом часто является трёхпроводное управление отрицательным импульсом.</p>
+      <p>По Mazda 6 2007-2008 в открытых установочных таблицах встречаются точки подключения для power lock/unlock около BCM/кик-панели. В одном из описаний для Mazda указаны lock/unlock через провода в зоне BCM, а также вариант с резистором около 1 кОм для одной из команд. Это не финальная схема к резке проводов, а рабочая гипотеза, которую Алексей подтвердит мультиметром и контрольной лампой.</p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>1. Штатный ЦЗ уже есть</h3>
+          <p>Если центральный замок с кнопки/ключа физически закрывает двери, значит внешнему блоку достаточно правильно подать управляющий сигнал, а не городить актуаторы в каждую дверь.</p>
+        </div>
+        <div class="card">
+          <h3>2. Старый Sher-Khan уже был интегрирован</h3>
+          <p>Раз Sher-Khan раньше управлял машиной, в жгуте уже есть пригодные точки подключения. Можно трассировать старую проводку, убрать лишнее и использовать проверенные цепи.</p>
+        </div>
+        <div class="card">
+          <h3>3. Есть готовые доноры</h3>
+          <p>Даже если свой контроллер не взлетит сразу, дешёвый универсальный блок ЦЗ даст рабочий fallback: два брелока, выходы lock/unlock, сирена, повороты.</p>
+        </div>
+      </div>
+
+      <h3>Ограничения честно</h3>
+      <ul>
+        <li>Дешёвые PKE-комплекты удобны, но не равны заводскому keyless по криптографии, помехоустойчивости и защите от relay attack.</li>
+        <li>Удалённый запуск и кнопка Start/Stop требуют отдельного решения по штатному иммобилайзеру, механической блокировке руля, ручнику/АКПП, тормозу и капоту. Для первого этапа это исключаем.</li>
+        <li>Если блок комфорта или BCM окислен и глючит сам по себе, новый контроллер не вылечит базовую неисправность. Сначала диагностика питания, масс, разъёмов и концевиков.</li>
+      </ul>
+
+      <p class="note warn">Правило проекта: самодельный блок не должен уметь заводить машину, обходить иммобилайзер или вмешиваться в критические цепи, пока не будет отдельного ТЗ и стендовой проверки.</p>
+    </section>
+
+    <section id="variants">
+      <h2>Варианты устройств и ссылки для покупки</h2>
+      <p>Цены и наличие меняются, поэтому ниже не один «единственно правильный» товар, а несколько классов железа. Самый рациональный путь: купить дешёвый универсальный блок ЦЗ как быстрый результат, параллельно собрать ESP32-прототип для кастомной логики.</p>
+
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Вариант</th>
+            <th>Что купить</th>
+            <th>Плюсы</th>
+            <th>Минусы</th>
+            <th>Вердикт</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A. Универсальная сигнализация/ЦЗ</strong></td>
+            <td>
+              <a href="https://www.amazon.com/Security-Protection-Universal-Keyless-Controls/dp/B07T2S1R9Y">Amazon: universal car alarm, 2 remotes, siren, harness</a><br>
+              <a href="https://market.yandex.ru/search?text=%D1%83%D0%BD%D0%B8%D0%B2%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9%20%D0%B1%D0%BB%D0%BE%D0%BA%20%D1%86%D0%B5%D0%BD%D1%82%D1%80%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B3%D0%BE%20%D0%B7%D0%B0%D0%BC%D0%BA%D0%B0%202%20%D0%B1%D1%80%D0%B5%D0%BB%D0%BE%D0%BA%D0%B0">Яндекс Маркет: блок ЦЗ с 2 брелоками</a><br>
+              <a href="https://www.aliexpress.com/w/wholesale-universal-car-keyless-entry-system.html">AliExpress: universal car keyless entry system</a>
+            </td>
+            <td>Быстро, дёшево, минимум разработки, понятная логика для автоэлектрика.</td>
+            <td>Нельзя гибко программировать. Качество зависит от конкретного продавца.</td>
+            <td><span class="tag good">Лучший MVP</span></td>
+          </tr>
+          <tr>
+            <td><strong>B. PKE-комплект без глубокого DIY</strong></td>
+            <td>
+              <a href="https://www.amazon.com/Remote-Passive-Keyless-Engine-Control/dp/B07TSFBGVN">Amazon: GIORDON/ZUODUN PKE, push start, app/remote</a><br>
+              <a href="https://www.amazon.com/EASYGUARD-EC002-F02-NFC-Passive-Keyless-Starter/dp/B0CQC315XM">Amazon: EASYGUARD EC002 NFC/PKE</a><br>
+              <a href="https://www.aliexpress.com/w/wholesale-easyguard-ec002-pke.html">AliExpress: EASYGUARD EC002 PKE</a>
+            </td>
+            <td>Даёт ощущение бесключевого доступа: подошёл/ушёл, брелок-метка, иногда NFC.</td>
+            <td>Много проводов, инструкции бывают туманными, запуск двигателя лучше не подключать на первом этапе.</td>
+            <td><span class="tag warn">Второй этап</span></td>
+          </tr>
+          <tr>
+            <td><strong>C. Keetec TS 10 / TS 50</strong></td>
+            <td>
+              <a href="https://apshop.eu/en/car-alarms-security-systems/880693-ts10-keetec-ts-10-car-alarm-ts10.html">APshop: Keetec TS 10</a><br>
+              <a href="https://www.tssgroup.eu/car-alarm-keetec-ts-50">TSS Group: Keetec TS 50</a>
+            </td>
+            <td>Более «сигнализационный» подход: датчики, сирена, входы дверей/капота/багажника, сервисные режимы.</td>
+            <td>Дороже китайского ЦЗ, меньше простора для вайбкодинга. TS 50 на сайте TSS отмечен как discontinued.</td>
+            <td><span class="tag">Надёжный донор</span></td>
+          </tr>
+          <tr>
+            <td><strong>D. ESP32 + релейный модуль + защита</strong></td>
+            <td>
+              <a href="https://lilygo.cc/en-us/products/t-can485">LILYGO T-CAN485 ESP32 CAN/RS485</a><br>
+              <a href="https://github.com/Xinyuan-LilyGO/T-CAN485">GitHub: примеры LILYGO T-CAN485</a><br>
+              <a href="https://www.aliexpress.com/w/wholesale-esp32-4-channel-relay-module.html">AliExpress: ESP32 relay module</a><br>
+              <a href="https://www.amazon.com/s?k=12v+automotive+relay+fuse+holder">Amazon: automotive relay + fuse holder</a>
+            </td>
+            <td>Максимальная гибкость: BLE-метка, логирование, веб-настройка, алгоритмы антидребезга, OTA.</td>
+            <td>Нужна аккуратная силовая часть, защита от просадок, помех и зависаний. Нельзя напрямую вешать GPIO на автомобиль.</td>
+            <td><span class="tag good">Для кастома</span></td>
+          </tr>
+          <tr>
+            <td><strong>E. StarLine/Pandora как готовый эталон</strong></td>
+            <td>
+              <a href="https://market.yandex.ru/search?text=StarLine%20A63%20ECO%202CAN%202LIN">Яндекс Маркет: StarLine A63/A93</a><br>
+              <a href="https://market.yandex.ru/search?text=Pandora%20%D1%81%D0%B8%D0%B3%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F%20CAN">Яндекс Маркет: Pandora CAN</a>
+            </td>
+            <td>Понятная автоэлектрикам экосистема, документация, брелоки, CAN, сервис.</td>
+            <td>Это уже не hand made и не дешёвый эксперимент.</td>
+            <td><span class="tag warn">Fallback</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Рекомендуемый список закупки для первой сборки</h3>
+      <div class="grid">
+        <div class="card half">
+          <h4>Минимальный MVP</h4>
+          <ul>
+            <li>Универсальный блок ЦЗ/сигнализации с двумя брелоками.</li>
+            <li>2 автомобильных реле 12 В SPDT 30/40 А или готовый релейный интерфейс lock/unlock.</li>
+            <li>Резисторы 1 кОм, 0.25-0.5 Вт для проверки варианта с резистивным управлением.</li>
+            <li>Предохранители 1-5 А на питание логики и 10-15 А на силовые линии, если они появятся.</li>
+            <li>Кнопка valet/service, светодиод статуса, сирена малой мощности.</li>
+            <li>Автомобильные провода, термоусадка с клеем, гофра, нормальные обжимные клеммы.</li>
+          </ul>
+        </div>
+        <div class="card half">
+          <h4>Для кастомного прототипа</h4>
+          <ul>
+            <li>ESP32 DevKit или LILYGO T-CAN485 как плата с запасом на CAN-эксперименты.</li>
+            <li>DC-DC 12 В -> 5 В с автомобильным диапазоном входа, TVS-диод, защита от переполюсовки.</li>
+            <li>Оптопары или транзисторные ключи для входов/выходов, отдельные автомобильные реле для ЦЗ.</li>
+            <li>RFID/NFC-модуль PN532 или BLE-метка/брелок для второго этапа.</li>
+            <li>Корпус, разъёмный жгут, маркировка проводов, отдельный стендовый разъём для прошивки.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2>Архитектура решения</h2>
+      <p>Система делится на две части: автомобильная электрическая интеграция и программируемая логика. Это важно: Алексей отвечает за то, чтобы машина видела корректные безопасные импульсы, а вайбкодинг отвечает только за алгоритм, который решает, когда эти импульсы дать.</p>
+
+      <div class="diagram" aria-label="Схема архитектуры">
+        <div class="node">
+          <strong>Пульт / BLE / PKE</strong>
+          <span>Команда открыть, закрыть, сервисный режим</span>
+        </div>
+        <div class="arrow"></div>
+        <div class="node">
+          <strong>Контроллер</strong>
+          <span>Государственная машина, таймеры, защита от повторов</span>
+        </div>
+        <div class="arrow"></div>
+        <div class="node">
+          <strong>Релейный интерфейс</strong>
+          <span>Короткие импульсы на штатный ЦЗ Mazda</span>
+        </div>
+      </div>
+
+      <h3>Функциональная логика</h3>
+      <ul>
+        <li><code>LOCK</code>: один импульс 300-800 мс на цепь закрытия, затем подтверждение поворотами или сиреной.</li>
+        <li><code>UNLOCK</code>: один импульс 300-800 мс на цепь открытия, затем подтверждение.</li>
+        <li><code>ARMED</code>: система ждёт вход двери/багажника/капота и ударный датчик, при тревоге включает сирену и аварийку.</li>
+        <li><code>VALET</code>: сервисный режим, все автоматические реакции выключены, остаётся только ручное управление ЦЗ.</li>
+        <li><code>FAIL-SAFE</code>: при перезагрузке контроллера все реле обесточены, никаких постоянных сигналов на автомобиль.</li>
+      </ul>
+
+      <h3>Что не делаем в MVP</h3>
+      <ul>
+        <li>Не подключаем удалённый запуск.</li>
+        <li>Не отключаем штатный иммобилайзер.</li>
+        <li>Не пишем в CAN-шину.</li>
+        <li>Не режем критические цепи двигателя, тормозов, подушек, ABS.</li>
+      </ul>
+    </section>
+
+    <section id="alexey">
+      <h2>Часть Алексея: автоэлектрика и диагностика</h2>
+      <p>Здесь самое ценное место для опыта автоэлектрика. Нужно не «угадать по интернету», а аккуратно подтвердить машину руками. Интернет даёт направление, Алексей даёт истину по конкретному кузову, комплектации и следам старого Sher-Khan.</p>
+
+      <h3>1. До подключения нового блока</h3>
+      <ol>
+        <li>Осмотреть и сфотографировать место старого блока Sher-Khan: питание, масса, сирена, повороты, концевики, lock/unlock, возможная блокировка стартера.</li>
+        <li>Проверить блок комфорта/BCM: следы влаги, зелёная окись, разъёмы, массы, постоянный плюс, ACC/IGN, просадки при закрытии дверей.</li>
+        <li>Проверить штатный ЦЗ без сигнализации: ключом, кнопкой в салоне, с водительской двери, все двери отдельно.</li>
+        <li>Проверить концевики дверей, багажника и капота. Ложные тревоги часто приходят именно от них.</li>
+        <li>Найти и обезвредить старые блокировки Sher-Khan, если они остались после снятия блока.</li>
+      </ol>
+
+      <h3>2. Подтверждение цепей lock/unlock</h3>
+      <ol>
+        <li>Найти провода управления ЦЗ в зоне BCM/кик-панели или по следам старой установки.</li>
+        <li>Проверить тип управления: отрицательный импульс, положительный импульс, один провод с резистором или отдельные lock/unlock.</li>
+        <li>Если подтверждается минусовое управление, сделать тест только через контрольный резистор/лампу и короткий импульс, без длительной подачи.</li>
+        <li>Если цепь резистивная, проверить номинал на штатной схеме и фактически. В открытых установочных описаниях для Mazda встречается вариант около 1 кОм для одной из команд.</li>
+        <li>Не подключать выход микроконтроллера напрямую. Только через реле, оптопару или транзисторный ключ с понятной развязкой.</li>
+      </ol>
+
+      <h3>3. Релейный интерфейс</h3>
+      <ul>
+        <li>Для отрицательного импульса использовать реле, которое на 300-800 мс замыкает нужный провод на массу.</li>
+        <li>Для резистивной команды один контакт реле замыкает через резистор нужного номинала.</li>
+        <li>Катушки реле защитить диодами или использовать готовые автомобильные реле с подавлением выбросов.</li>
+        <li>Питание блока брать через отдельный предохранитель, массу делать короткой и надёжной.</li>
+        <li>Все соединения делать разъёмными или документировать так, чтобы систему можно было снять без археологии.</li>
+      </ul>
+
+      <h3>4. Проверки после подключения</h3>
+      <ul>
+        <li>Открыть/закрыть 30-50 циклов подряд, включая холодную машину и просадку напряжения.</li>
+        <li>Проверить, что реле не зависает во включенном состоянии.</li>
+        <li>Проверить, что машина не закрывается сама с ключом внутри при сервисном режиме.</li>
+        <li>Проверить ток покоя через 10-20 минут после постановки на охрану. Цель для самодельного блока: единицы-десятки миллиампер, без разряда АКБ за несколько дней.</li>
+        <li>Проверить, что штатная механическая личинка и родной ключ остаются рабочим способом доступа.</li>
+      </ul>
+
+      <div class="note">
+        <strong>Кайфовый гаражный вариант:</strong> оставить старый Sher-Khan-жгут как карту местности, но поставить новый маленький разъёмный модуль. Получится не «скрутка на удачу», а аккуратная самодельная платформа, которую потом можно развивать.
+      </div>
+    </section>
+
+    <section id="dev">
+      <h2>Блок для передачи в разработку Claude Code</h2>
+      <p>Этот раздел можно дать разработке почти как исходное ТЗ. Он описывает прошивку, состояния, входы/выходы и критерии готовности. Для MVP достаточно ESP32, PlatformIO/Arduino framework и простого веб-интерфейса настройки.</p>
+
+      <h3>Цель прошивки</h3>
+      <p>Сделать контроллер, который принимает команды от кнопки/брелока/BLE/NFC-модуля и выдаёт безопасные короткие импульсы на релейные выходы lock/unlock, не допуская зависания реле, повторной дрожащей команды и самопроизвольного срабатывания после перезагрузки.</p>
+
+      <h3>Аппаратные абстракции</h3>
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Сигнал</th>
+            <th>Тип</th>
+            <th>Назначение</th>
+            <th>Поведение по умолчанию</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>OUT_LOCK</code></td>
+            <td>digital output</td>
+            <td>Реле закрытия</td>
+            <td>LOW/off после boot</td>
+          </tr>
+          <tr>
+            <td><code>OUT_UNLOCK</code></td>
+            <td>digital output</td>
+            <td>Реле открытия</td>
+            <td>LOW/off после boot</td>
+          </tr>
+          <tr>
+            <td><code>OUT_SIREN</code></td>
+            <td>digital output</td>
+            <td>Сирена или клаксон через реле</td>
+            <td>LOW/off после boot</td>
+          </tr>
+          <tr>
+            <td><code>OUT_LIGHTS</code></td>
+            <td>digital output</td>
+            <td>Повороты/аварийка через интерфейс</td>
+            <td>LOW/off после boot</td>
+          </tr>
+          <tr>
+            <td><code>IN_DOOR</code></td>
+            <td>digital input</td>
+            <td>Двери открыты</td>
+            <td>Pull-up/pull-down по фактической схеме</td>
+          </tr>
+          <tr>
+            <td><code>IN_SERVICE</code></td>
+            <td>digital input</td>
+            <td>Кнопка valet/service</td>
+            <td>Длинное нажатие включает сервис</td>
+          </tr>
+          <tr>
+            <td><code>IN_TAG</code></td>
+            <td>BLE/NFC/RFID</td>
+            <td>Метка владельца для PKE</td>
+            <td>Отключено в MVP</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Состояния</h3>
+      <pre><code>DISARMED
+  команда LOCK -> pulseLock() -> ARMED
+
+ARMED
+  команда UNLOCK -> pulseUnlock() -> DISARMED
+  дверь/багажник/капот открыт -> ALARM
+
+ALARM
+  сирена/свет по таймеру
+  команда UNLOCK или SERVICE -> DISARMED
+
+VALET
+  автоматическое закрытие и тревога отключены
+  ручные LOCK/UNLOCK разрешены
+
+FAULT
+  все выходы off
+  ошибка пишется в журнал
+  выход только после service reset</code></pre>
+
+      <h3>Правила безопасности прошивки</h3>
+      <ul>
+        <li>Максимальная длительность любого релейного импульса задаётся константой и не может быть превышена логикой приложения.</li>
+        <li>После перезагрузки контроллер не повторяет последнюю команду.</li>
+        <li>Команды lock/unlock имеют debounce и cooldown, например 1200 мс.</li>
+        <li>Если одновременно запрошены lock и unlock, оба выхода выключаются и ставится ошибка.</li>
+        <li>Настройки хранятся в NVS/EEPROM с версией схемы данных.</li>
+        <li>Веб-интерфейс настройки включается только в сервисном режиме.</li>
+      </ul>
+
+      <h3>Минимальная структура репозитория прошивки</h3>
+      <pre><code>firmware/
+  platformio.ini
+  src/
+    main.cpp
+    config.h
+    io_map.h
+    state_machine.cpp
+    state_machine.h
+    pulse_outputs.cpp
+    pulse_outputs.h
+    storage.cpp
+    storage.h
+    web_config.cpp
+    web_config.h
+  test/
+    test_state_machine.cpp
+docs/
+  wiring-notes.md
+  test-checklist.md</code></pre>
+
+      <h3>Критерии готовности MVP прошивки</h3>
+      <ul>
+        <li>На столе по кнопкам или serial-командам выполняются <code>lock</code> и <code>unlock</code>.</li>
+        <li>Импульс имеет настраиваемую длительность, по умолчанию 500 мс.</li>
+        <li>При зависании кода watchdog перезапускает ESP32, а выходы остаются выключены.</li>
+        <li>Есть serial log: boot, command, pulse start, pulse end, state change, fault.</li>
+        <li>Есть тесты state machine на переходы DISARMED/ARMED/ALARM/VALET.</li>
+        <li>Есть отдельный режим dry-run, когда вместо реле мигают светодиоды.</li>
+      </ul>
+    </section>
+
+    <section id="roadmap">
+      <h2>Развёрнутый план действий</h2>
+      <div class="phase">
+        <div class="num">1</div>
+        <div>
+          <h3>День 1: ревизия машины</h3>
+          <p>Снять остатки старой сигналки, сфотографировать жгут, проверить BCM/блок комфорта, массы, питание, штатный ЦЗ, концевики. Итог: схема фактических точек подключения и список неисправностей.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">2</div>
+        <div>
+          <h3>День 1-2: быстрый MVP на готовом блоке</h3>
+          <p>Подключить универсальный блок ЦЗ только к питанию, массе, lock/unlock и подтверждению светом. Не подключать запуск, иммобилайзер и блокировки. Итог: машина открывается и закрывается с брелока.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">3</div>
+        <div>
+          <h3>День 2-4: стенд ESP32</h3>
+          <p>Собрать ESP32 с двумя реле на столе, написать прошивку MVP, прогнать тесты на светодиодах и реле без автомобиля. Итог: контроллер надёжно даёт короткие импульсы и не залипает.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">4</div>
+        <div>
+          <h3>День 4-5: установка кастомного контроллера</h3>
+          <p>Поставить ESP32-блок параллельно или вместо дешёвого блока, но через тот же проверенный релейный интерфейс. Сделать разъём, предохранитель, сервисную кнопку. Итог: кастомная прошивка управляет ЦЗ.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">5</div>
+        <div>
+          <h3>Неделя 2: PKE без запуска</h3>
+          <p>Добавить BLE/RFID/NFC-метку: при приближении открывать, при удалении закрывать. Обязательно добавить задержки, запрет закрытия при открытой двери, сервисный режим и ручное отключение автоматики. Итог: первый бесключевой доступ без вмешательства в двигатель.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">6</div>
+        <div>
+          <h3>Неделя 3+: улучшения</h3>
+          <p>Датчик удара, сирена, журнал событий, настройка с телефона через Wi-Fi, контроль напряжения АКБ, аккуратный корпус, печатная плата. Удалённый запуск рассматривать только отдельным проектом после полной схемы иммобилайзера и юридически/технически безопасной процедуры.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="sources">
+      <h2>Источники и полезные ссылки</h2>
+      <ul>
+        <li><a href="https://www.rclick.co.uk/documents/Universal_Fitting_All_Vehicles.pdf">RightCLICK universal fitting guide</a>: типы цепей центрального замка и проверки отрицательных/положительных импульсов.</li>
+        <li><a href="https://www.commandocaralarms.com/wiring/2007-2008/mazda/mazda6/1399.html">Commando Car Alarms wiring chart for Mazda 6 2007-2008</a>: открытая установочная таблица по Mazda 6.</li>
+        <li><a href="https://www.justanswer.com/mazda/9hgrj-mazda-6-i-m-trying-wire-alarm-need-correct.html">JustAnswer Mazda lock/unlock note</a>: пример обсуждения lock/unlock около BCM и резистивного варианта.</li>
+        <li><a href="https://www.amazon.com/Security-Protection-Universal-Keyless-Controls/dp/B07T2S1R9Y">Universal car alarm on Amazon</a>: пример дешёвого комплекта с двумя пультами, сиреной и жгутом.</li>
+        <li><a href="https://www.amazon.com/Remote-Passive-Keyless-Engine-Control/dp/B07TSFBGVN">GIORDON/ZUODUN PKE kit on Amazon</a>: пример PKE/Push Start комплекта для 12 В автомобилей.</li>
+        <li><a href="https://www.amazon.com/EASYGUARD-EC002-F02-NFC-Passive-Keyless-Starter/dp/B0CQC315XM">EASYGUARD EC002 NFC/PKE on Amazon</a>: пример более продвинутого PKE-комплекта.</li>
+        <li><a href="https://apshop.eu/en/car-alarms-security-systems/880693-ts10-keetec-ts-10-car-alarm-ts10.html">Keetec TS 10 at APshop</a>: пример европейской сигнализации с брелоками, датчиком удара и ЦЗ.</li>
+        <li><a href="https://www.tssgroup.eu/car-alarm-keetec-ts-50">Keetec TS 50 at TSS Group</a>: пример сигнализации с аналоговым/CAN подключением и PC programming, но модель отмечена как снятая.</li>
+        <li><a href="https://lilygo.cc/en-us/products/t-can485">LILYGO T-CAN485</a> и <a href="https://github.com/Xinyuan-LilyGO/T-CAN485">GitHub repository</a>: ESP32-плата с CAN/RS485 и примерами для разработческой версии.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Документ подготовлен как проектная рамка, а не как финальная электросхема. Все провода Mazda нужно подтверждать на конкретной машине измерением и схемой, особенно после старой установки и окисления блока комфорта.</p>
+  </footer>
+</body>
+</html>
