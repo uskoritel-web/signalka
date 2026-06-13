@@ -453,6 +453,19 @@
           <h3>Расширяемость</h3>
           <p>Если хочется именно hand made, делаем свой контроллер поверх ESP32: BLE/NFC/RFID-метка, реле, входы концевиков, журнал событий, настройка через Wi-Fi страницу. Но силовые цепи и защита должны быть автомобильного уровня.</p>
         </div>
+        <div class="card full">
+          <span class="tag good">Для Алексея</span>
+          <h3>Это можно собрать не с нуля, а как свою платформу на базе чужого опыта</h3>
+          <p>Есть готовые энтузиастские проекты, где люди уже соединяли микроконтроллер, GSM/LTE, GPS, реле, веб-карту и уведомления. Мы не копируем их вслепую, но можем взять архитектурные идеи: безопасные импульсы на реле, журнал событий, удалённое управление, трекинг, уведомления и web/app-интерфейс.</p>
+          <p>Примеры для вдохновения: <a href="https://github.com/ziek-za/arduino-car-alarm">Arduino car alarm с SIM800L</a>, <a href="https://github.com/AkhileshGowrishetty/GPS-Tracker">ESP32 + SIM7600 GPS tracker с отправкой в AWS</a>, <a href="https://github.com/AnthonyThomahawk/GPSTracker-IoT">ESP32 GSM/GPS tracker с веб-картой</a>, <a href="https://www.reddit.com/r/esp32/comments/uxjjjo/realtime_vehicle_tracking_system_using_esp32_2022/">TTGO T-SIM7000G кейс с Home Assistant/Traccar</a>, <a href="https://github.com/MagnusThome/RejsaCAN-ESP32">RejsaCAN ESP32-плата для автомобильных проектов</a>.</p>
+          <p>Самый интересный вариант для гаражной разработки: купить не «чёрный ящик», а набор модулей — ESP32/LTE, реле, DC-DC питание, TVS-защиту, корпус, разъёмы — и собрать устройство под Mazda. Тогда можно придумать свои функции: мягкая постановка на охрану, сервисный режим для ремонта, лог ложных срабатываний, управление с телефона, уведомление о просадке АКБ, геометка, режим «не закрывать, если ключ внутри».</p>
+        </div>
+        <div class="card full">
+          <span class="tag warn">Будущий продукт</span>
+          <h3>Сразу закладываем веб-приложение, мобильное приложение и российскую SIM</h3>
+          <p>Если хотим, чтобы этим потом пользовался обычный человек, железо лучше выбирать с интернетом через SIM. Для прототипа подойдут ESP32-платы с LTE: <a href="https://lilygo.cc/en-us/products/t-sim-a7670e">LILYGO T-A7670E/G/SA R2</a>, <a href="https://lilygo.cc/en-us/products/t-sim7600">LILYGO T-SIM7600</a>, <a href="https://lilygo.cc/en-us/products/t-sim-7670g-s3">LILYGO T-SIM7670G S3</a>, либо отдельный SIMCom A7670/SIM7600-модуль.</p>
+          <p>Старые SIM800L/SIM900 дешёвые и часто встречаются в DIY-проектах, но они 2G. Для нормального продукта лучше 4G/LTE Cat-1 или Cat-4: российская SIM с тарифом для устройств, HTTPS/MQTT к серверу, команды из мобильного приложения, резерв через SMS при плохом интернете.</p>
+        </div>
       </div>
 
       <div class="note">
@@ -561,7 +574,21 @@
             <td><span class="tag good">Для кастома</span></td>
           </tr>
           <tr>
-            <td><strong>E. StarLine/Pandora как готовый эталон</strong></td>
+            <td><strong>E. ESP32 + LTE/SIM для приложения</strong></td>
+            <td>
+              <a href="https://lilygo.cc/en-us/products/t-sim-a7670e">LILYGO T-A7670E/G/SA R2 LTE Cat-1</a><br>
+              <a href="https://lilygo.cc/en-us/products/t-sim7600">LILYGO T-SIM7600 LTE Cat-4/GPS</a><br>
+              <a href="https://lilygo.cc/en-us/products/t-sim-7670g-s3">LILYGO T-SIM7670G S3</a><br>
+              <a href="https://aliexpress.ru/wholesale?SearchText=ESP32+4G+LTE+A7670">AliExpress: ESP32 4G LTE A7670</a><br>
+              <a href="https://aliexpress.ru/wholesale?SearchText=ESP32+SIM7600+4G+LTE+GPS">AliExpress: ESP32 SIM7600 4G LTE GPS</a>
+            </td>
+            <td>Плата обычно $33-70 без доставки, в РФ/с доставкой ориентир 4 000-10 000 ₽ за LTE-плату. Полный прототип с реле и питанием: 12 000-25 000 ₽.</td>
+            <td>Можно делать веб-приложение, мобильное приложение, MQTT/HTTPS, уведомления, трекинг, удалённые настройки, российскую SIM.</td>
+            <td>Сложнее питание, антенны, корпус, тариф SIM, серверная часть и защита команд.</td>
+            <td><span class="tag warn">Для продукта</span></td>
+          </tr>
+          <tr>
+            <td><strong>F. StarLine/Pandora как готовый эталон</strong></td>
             <td>
               <a href="https://market.yandex.ru/search?text=StarLine%20A63%20ECO%202CAN%202LIN">Яндекс Маркет: StarLine A63/A93</a><br>
               <a href="https://market.yandex.ru/search?text=Pandora%20%D1%81%D0%B8%D0%B3%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F%20CAN">Яндекс Маркет: Pandora CAN</a>
@@ -598,12 +625,20 @@
           <p><strong>Цена:</strong> ESP32-реле $6-12, LILYGO T-CAN485 около $12 без доставки, полный прототип с питанием и корпусом всё равно выйдет ближе к 5 000-12 000 ₽.</p>
         </div>
         <div class="card half">
+          <span class="tag warn">Для приложения</span>
+          <h4>ESP32 + 4G/LTE + российская SIM</h4>
+          <p><strong>Что искать:</strong> <code>LILYGO T-A7670G</code>, <code>LILYGO T-SIM7600</code>, <code>ESP32 SIM7600 4G GPS</code>, <code>ESP32 A7670 LTE</code>.</p>
+          <p><strong>Где:</strong> <a href="https://lilygo.cc/en-us/products/t-sim-a7670e">LILYGO T-A7670</a>, <a href="https://lilygo.cc/en-us/products/t-sim7600">LILYGO T-SIM7600</a>, <a href="https://aliexpress.ru/wholesale?SearchText=ESP32+SIM7600+4G+LTE+GPS">AliExpress SIM7600</a>, <a href="https://aliexpress.ru/wholesale?SearchText=ESP32+4G+LTE+A7670">AliExpress A7670</a>.</p>
+          <p><strong>Цена:</strong> обычно 4 000-10 000 ₽ за плату с LTE без силовой обвязки. Для прототипа с реле, питанием, антеннами и корпусом закладывать 12 000-25 000 ₽.</p>
+        </div>
+        <div class="card half">
           <span class="tag bad">Отсекаем</span>
           <h4>Что не брать</h4>
           <ul>
             <li>Комплекты без схемы проводов и без фото жгута.</li>
             <li>Блоки, где lock/unlock есть только по CAN без аналоговых выходов.</li>
             <li>PKE-комплекты, которые требуют обязательного обхода иммобилайзера для базового доступа.</li>
+            <li>SIM800L/SIM900 как основную связь для продукта: дешево для эксперимента, но 2G-зависимость слишком рискованна.</li>
             <li>Релейные платы без опторазвязки/транзисторных ключей, если продавец не показывает схему.</li>
             <li>Товары с MOQ 100-1000 шт., если нет желания общаться с поставщиком или искать посредника.</li>
           </ul>
@@ -690,6 +725,27 @@
             <td>Официально $11.86 без доставки; удобно, если позже захочется читать CAN.</td>
           </tr>
           <tr>
+            <td>LILYGO T-A7670 / T-SIM7600 / ESP32 SIM7600</td>
+            <td>Интернет через российскую SIM для веб/мобильного приложения</td>
+            <td>1</td>
+            <td>4 000-10 000</td>
+            <td>Лучше брать LTE Cat-1/Cat-4, не SIM800L как основную связь. Нужны LTE-антенна и нормальное питание.</td>
+          </tr>
+          <tr>
+            <td>SIM-карта и тариф для IoT/мобильного интернета</td>
+            <td>Связь с сервером, MQTT/HTTPS, уведомления</td>
+            <td>1</td>
+            <td>100-500 ₽/мес</td>
+            <td>Трафик маленький, но нужен стабильный оператор в местах, где машина обычно стоит.</td>
+          </tr>
+          <tr>
+            <td>LTE/GPS антенны, кабели, гермовводы</td>
+            <td>Связь и трекинг</td>
+            <td>1 комплект</td>
+            <td>700-2 500</td>
+            <td>Если плата идёт с антеннами, можно сэкономить. В машине расположение антенны сильно влияет на качество связи.</td>
+          </tr>
+          <tr>
             <td>DC-DC 12 В -> 5 В, TVS, защита от переполюсовки</td>
             <td>Автомобильное питание ESP32</td>
             <td>1 комплект</td>
@@ -748,6 +804,12 @@
           <p>Два пути: готовый PKE-комплект или собственные BLE/NFC-метки. В эту вилку включён предыдущий этап и запас на переделки.</p>
         </div>
         <div class="card">
+          <span class="tag warn">LTE + app</span>
+          <h4>Веб/мобильное приложение</h4>
+          <p><strong>20 000-50 000 ₽</strong> по железу и первичной инфраструктуре.</p>
+          <p>Включает ESP32+LTE, реле, питание, корпус, SIM, антенны и минимальный сервер/MQTT. Разработка приложения считается отдельно.</p>
+        </div>
+        <div class="card">
           <span class="tag bad">Не сейчас</span>
           <h4>PKE + запуск двигателя</h4>
           <p><strong>30 000-70 000 ₽+</strong> и отдельное ТЗ.</p>
@@ -758,6 +820,7 @@
           <h4>Оценка трудозатрат</h4>
           <p><strong>Алексей:</strong> 3-6 часов на диагностику и MVP, 8-16 часов на аккуратный кастомный блок, 16-30 часов на PKE с доводкой.</p>
           <p><strong>Разработка прошивки:</strong> 4-8 часов на стендовый MVP, 12-24 часа на веб-настройки/логи/состояния, 20-40 часов на PKE-логику и полевые тесты.</p>
+          <p><strong>Веб/мобильное приложение:</strong> 30-80 часов на первый рабочий контур: аккаунт, привязка устройства, команды lock/unlock, статус, журнал, push/Telegram, базовая карта. Красивый продуктовый уровень — отдельная итерация.</p>
           <p>Если считать коммерчески, работа легко станет дороже железа. Если это гаражный проект «для кайфа», главный денежный ориентир: первый результат реально уложить примерно в <strong>5-10 тысяч рублей</strong>.</p>
         </div>
       </div>
@@ -932,8 +995,24 @@
             <td>Метка владельца для PKE</td>
             <td>Отключено в MVP</td>
           </tr>
+          <tr>
+            <td><code>MODEM_LTE</code></td>
+            <td>UART/USB modem</td>
+            <td>Российская SIM, MQTT/HTTPS, SMS fallback</td>
+            <td>Отключено в MVP, включается в версии app-ready</td>
+          </tr>
         </tbody>
       </table>
+
+      <h3>Связь с веб- и мобильным приложением</h3>
+      <p>Для версии с российской SIM устройство должно уметь выходить в интернет через LTE-модем и общаться с сервером по MQTT over TLS или HTTPS. Команды из приложения не должны напрямую «дёргать реле»: сервер отправляет команду, прошивка проверяет подпись/токен, состояние машины, cooldown и только потом запускает безопасный импульс.</p>
+      <ul>
+        <li><code>device_id</code>, ключ устройства и владелец хранятся отдельно от публичных настроек.</li>
+        <li>Команды: <code>lock</code>, <code>unlock</code>, <code>arm</code>, <code>disarm</code>, <code>valet_on</code>, <code>valet_off</code>, <code>status</code>.</li>
+        <li>События: открытие двери, тревога, просадка АКБ, потеря связи, восстановление связи, координаты GPS, ручное открытие.</li>
+        <li>Приложение показывает статус, журнал, заряд/напряжение, последнюю геометку и позволяет менять безопасные настройки.</li>
+        <li>SMS используется только как резерв: например, отправить тревожное сообщение или принять команду сервисного отключения с белого списка номеров.</li>
+      </ul>
 
       <h3>Состояния</h3>
       <pre><code>DISARMED
@@ -985,7 +1064,13 @@ FAULT
     test_state_machine.cpp
 docs/
   wiring-notes.md
-  test-checklist.md</code></pre>
+  test-checklist.md
+server/
+  mqtt-or-http-api.md
+  device-auth.md
+mobile-app/
+  user-flows.md
+  api-contract.md</code></pre>
 
       <h3>Критерии готовности MVP прошивки</h3>
       <ul>
@@ -1038,7 +1123,14 @@ docs/
       <div class="phase">
         <div class="num">6</div>
         <div>
-          <h3>Неделя 3+: улучшения</h3>
+          <h3>Неделя 3: LTE и приложение</h3>
+          <p>Поставить LTE-плату или отдельный LTE-модем, проверить российскую SIM, поднять MQTT/HTTPS, отправить первый статус устройства на сервер и получить первую команду из веб-интерфейса. Итог: машина не просто открывается, а становится подключённым устройством.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="num">7</div>
+        <div>
+          <h3>Неделя 4+: улучшения</h3>
           <p>Датчик удара, сирена, журнал событий, настройка с телефона через Wi-Fi, контроль напряжения АКБ, аккуратный корпус, печатная плата. Удалённый запуск рассматривать только отдельным проектом после полной схемы иммобилайзера и юридически/технически безопасной процедуры.</p>
         </div>
       </div>
@@ -1056,6 +1148,15 @@ docs/
         <li><a href="https://aliexpress.ru/wholesale?SearchText=easyguard+ec002+pke">AliExpress EASYGUARD EC002 PKE search</a>: розничный поиск PKE-комплектов на базе EASYGUARD/аналогов.</li>
         <li><a href="https://www.alibaba.com/product-detail/EASYGUARD-EC002-K2-RFID-PKE-Car_62439559875.html">Alibaba EASYGUARD EC002-K2 RFID/PKE</a>: пример китайской PKE-платформы для оценки оптовых цен и комплектации.</li>
         <li><a href="https://m.banggood.com/buy/esp32-12v-relay.html">Banggood ESP32 12V relay search</a>: альтернативный китайский поиск ESP32-релейных модулей.</li>
+        <li><a href="https://github.com/ziek-za/arduino-car-alarm">ziek-za/arduino-car-alarm</a>: пример автомобильной сигнализации на Arduino и SIM800L с удалённым включением/выключением и уведомлениями.</li>
+        <li><a href="https://github.com/AkhileshGowrishetty/GPS-Tracker">AkhileshGowrishetty/GPS-Tracker</a>: пример ESP32 + SIM7600 GPS-трекера с отправкой координат в AWS и веб-отображением.</li>
+        <li><a href="https://github.com/AnthonyThomahawk/GPSTracker-IoT">AnthonyThomahawk/GPSTracker-IoT</a>: ESP32 GSM/GPS-трекер с HTTP-сервером, MongoDB и веб-картой.</li>
+        <li><a href="https://www.reddit.com/r/esp32/comments/uxjjjo/realtime_vehicle_tracking_system_using_esp32_2022/">Reddit ESP32 TTGO T-SIM7000G tracker case</a>: практический кейс с Home Assistant/Traccar и малым расходом трафика.</li>
+        <li><a href="https://github.com/MagnusThome/RejsaCAN-ESP32">MagnusThome/RejsaCAN-ESP32</a>: пример маленькой ESP32/ESP32-S3 платы, рассчитанной на автомобильные проекты, CAN и питание от машины.</li>
+        <li><a href="https://lilygo.cc/en-us/products/t-sim-a7670e">LILYGO T-A7670E/G/SA R2</a>: ESP32 + 4G LTE Cat-1 плата, подходящая для SIM-связи и будущего приложения.</li>
+        <li><a href="https://lilygo.cc/en-us/products/t-sim7600">LILYGO T-SIM7600</a>: ESP32 + 4G LTE Cat-4/GPS плата для более скоростной связи и трекинга.</li>
+        <li><a href="https://randomnerdtutorials.com/lilygo-ttgo-t-a7670g-a7670e-a7670sa-esp32/">Random Nerd Tutorials: LILYGO T-A7670G ESP32 guide</a>: практическое руководство по плате ESP32 + A7670, SIM, LTE и GPS.</li>
+        <li><a href="https://iz.ru/en/node/2111980">Izvestia: Russia to retain 2G networks</a> и <a href="https://interfax.com/newsroom/top-stories/114190/">Interfax: MTS 3G shutdown plans</a>: контекст по сетям в России; для нового продукта всё равно разумнее закладывать LTE.</li>
         <li><a href="https://apshop.eu/en/car-alarms-security-systems/880693-ts10-keetec-ts-10-car-alarm-ts10.html">Keetec TS 10 at APshop</a>: пример европейской сигнализации с брелоками, датчиком удара и ЦЗ.</li>
         <li><a href="https://www.tssgroup.eu/car-alarm-keetec-ts-50">Keetec TS 50 at TSS Group</a>: пример сигнализации с аналоговым/CAN подключением и PC programming, но модель отмечена как снятая.</li>
         <li><a href="https://lilygo.cc/en-us/products/t-can485">LILYGO T-CAN485</a> и <a href="https://github.com/Xinyuan-LilyGO/T-CAN485">GitHub repository</a>: ESP32-плата с CAN/RS485 и примерами для разработческой версии.</li>
